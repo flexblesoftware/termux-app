@@ -3,10 +3,10 @@
     <!-- TermuxActivity DayNight NoActionBar theme. -->
     <style name="Theme.TermuxActivity.DayNight.NoActionBar" parent="Theme.TermuxApp.DayNight.NoActionBar">
         <!-- Primary brand color: Neon Cyan Accent -->
-        <item name="colorPrimary">#00E5FF</item>
-        <item name="colorPrimaryVariant">#0A0F1D</item>
+        <item name="colorPrimary">@color/anti_shell_cyan</item>
+        <item name="colorPrimaryVariant">@color/anti_shell_drawer_bg</item>
 
-        <item name="android:windowBackground">#0A0E17</item>
+        <item name="android:windowBackground">@color/anti_shell_bg</item>
 
         <item name="android:windowActionModeOverlay">true</item>
 
@@ -18,14 +18,14 @@
 
         <!-- Left drawer: Modern Obsidian Card -->
         <item name="buttonBarButtonStyle">@style/TermuxActivity.Drawer.ButtonBarStyle.Dark</item>
-        <item name="termuxActivityDrawerBackground">#0A0F1D</item>
-        <item name="termuxActivityDrawerImageTint">#00E5FF</item>
+        <item name="termuxActivityDrawerBackground">@color/anti_shell_drawer_bg</item>
+        <item name="termuxActivityDrawerImageTint">@color/anti_shell_cyan</item>
 
         <!-- Extra keys colors: Modern Cyber Theme -->
-        <item name="extraKeysButtonTextColor">#00E5FF</item>
-        <item name="extraKeysButtonActiveTextColor">#00FFA3</item>
-        <item name="extraKeysButtonBackgroundColor">#0D1322</item>
-        <item name="extraKeysButtonActiveBackgroundColor">#1E293B</item>
+        <item name="extraKeysButtonTextColor">@color/anti_shell_cyan</item>
+        <item name="extraKeysButtonActiveTextColor">@color/anti_shell_mint</item>
+        <item name="extraKeysButtonBackgroundColor">@color/anti_shell_btn_bg</item>
+        <item name="extraKeysButtonActiveBackgroundColor">@color/anti_shell_btn_active_bg</item>
     </style>
 
 </resources>
