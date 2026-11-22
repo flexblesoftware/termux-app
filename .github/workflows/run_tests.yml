@@ -10,10 +10,6 @@ on:
       - master
       - android-10
 
-permissions:
-  pull-requests: write
-  contents: read
-
 jobs:
   testing:
     runs-on: ubuntu-latest
@@ -25,19 +21,6 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '17'
-    - name: Execute tests and capture log
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Execute tests
       run: |
-        set +e
-        ./gradlew test --stacktrace > build_test.log 2>&1
-        STATUS=$?
-        if [ $STATUS -ne 0 ]; then
-          tail -n 120 build_test.log > error_summary.txt
-          gh pr comment ${{ github.event.pull_request.number }} --body "### Test Failure Log:
-          \`\`\`
-          $(cat error_summary.txt)
-          \`\`\`" || true
-          cat error_summary.txt
-          exit $STATUS
-        fi
+        ./gradlew test
