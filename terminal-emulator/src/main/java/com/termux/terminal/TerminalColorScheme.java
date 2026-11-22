@@ -11,26 +11,26 @@ import java.util.Properties;
  */
 public final class TerminalColorScheme {
 
-    /** http://upload.wikimedia.org/wikipedia/en/1/15/Xterm_256color_chart.svg, but with blue color brighter. */
+    /** Modern Anti Shell Cyberpunk/Tokyo Night ANSI palette */
     private static final int[] DEFAULT_COLORSCHEME = {
-        // 16 original colors. First 8 are dim.
-        0xff000000, // black
-        0xffcd0000, // dim red
-        0xff00cd00, // dim green
-        0xffcdcd00, // dim yellow
-        0xff6495ed, // dim blue
-        0xffcd00cd, // dim magenta
-        0xff00cdcd, // dim cyan
-        0xffe5e5e5, // dim white
+        // 16 original colors. First 8 are standard / dim:
+        0xff161b22, // 0: black (obsidian)
+        0xffff5555, // 1: dim red
+        0xff50fa7b, // 2: dim green (neon spring)
+        0xfff1fa8c, // 3: dim yellow
+        0xff00b4d8, // 4: dim blue (cyber blue)
+        0xffff79c6, // 5: dim magenta (neon pink)
+        0xff00e5ff, // 6: dim cyan (neon cyan)
+        0xffe6edf3, // 7: dim white (soft white)
         // Second 8 are bright:
-        0xff7f7f7f, // medium grey
-        0xffff0000, // bright red
-        0xff00ff00, // bright green
-        0xffffff00, // bright yellow
-        0xff5c5cff, // light blue
-        0xffff00ff, // bright magenta
-        0xff00ffff, // bright cyan
-        0xffffffff, // bright white
+        0xff6272a4, // 8: bright black / grey
+        0xffff6e6e, // 9: bright red
+        0xff69ff94, // 10: bright green
+        0xffffffa5, // 11: bright yellow
+        0xff38bdf8, // 12: bright blue
+        0xffff92d0, // 13: bright magenta
+        0xff8be9fd, // 14: bright cyan
+        0xffffffff, // 15: bright white
 
         // 216 color cube, six shades of each color:
         0xff000000, 0xff00005f, 0xff000087, 0xff0000af, 0xff0000d7, 0xff0000ff, 0xff005f00, 0xff005f5f, 0xff005f87, 0xff005faf, 0xff005fd7, 0xff005fff,
@@ -56,8 +56,8 @@ public final class TerminalColorScheme {
         0xff080808, 0xff121212, 0xff1c1c1c, 0xff262626, 0xff303030, 0xff3a3a3a, 0xff444444, 0xff4e4e4e, 0xff585858, 0xff626262, 0xff6c6c6c, 0xff767676,
         0xff808080, 0xff8a8a8a, 0xff949494, 0xff9e9e9e, 0xffa8a8a8, 0xffb2b2b2, 0xffbcbcbc, 0xffc6c6c6, 0xffd0d0d0, 0xffdadada, 0xffe4e4e4, 0xffeeeeee,
 
-        // COLOR_INDEX_DEFAULT_FOREGROUND, COLOR_INDEX_DEFAULT_BACKGROUND and COLOR_INDEX_DEFAULT_CURSOR:
-        0xffffffff, 0xff000000, 0xffffffff};
+        // COLOR_INDEX_DEFAULT_FOREGROUND (#E6EDF3), COLOR_INDEX_DEFAULT_BACKGROUND (#0A0E17) and COLOR_INDEX_DEFAULT_CURSOR (#00E5FF):
+        0xffe6edf3, 0xff0a0e17, 0xff00e5ff};
 
     public final int[] mDefaultColors = new int[TextStyle.NUM_INDEXED_COLORS];
 
@@ -109,7 +109,7 @@ public final class TerminalColorScheme {
      * If the "cursor" color is not set by user, we need to decide on the appropriate color that will
      * be visible on the current terminal background. White will not be visible on light backgrounds
      * and black won't be visible on dark backgrounds. So we find the perceived brightness of the
-     * background color and if its below the threshold (too dark), we use white cursor and if its
+     * background color and if its below the threshold (too dark), we use neon cyan cursor and if its
      * above (too bright), we use black cursor.
      */
     public void setCursorColorForBackground() {
@@ -117,7 +117,7 @@ public final class TerminalColorScheme {
         int brightness = TerminalColors.getPerceivedBrightnessOfColor(backgroundColor);
         if (brightness > 0) {
             if (brightness < 130)
-                mDefaultColors[TextStyle.COLOR_INDEX_CURSOR] = 0xffffffff;
+                mDefaultColors[TextStyle.COLOR_INDEX_CURSOR] = 0xff00e5ff;
             else
                 mDefaultColors[TextStyle.COLOR_INDEX_CURSOR] = 0xff000000;
         }
