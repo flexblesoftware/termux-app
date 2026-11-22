@@ -107,6 +107,7 @@ final class TermuxInstaller {
             if (TermuxFileUtils.isTermuxPrefixDirectoryEmpty()) {
                 Logger.logInfo(LOG_TAG, "The termux prefix directory \"" + TERMUX_PREFIX_DIR_PATH + "\" exists but is empty or only contains specific unimportant files.");
             } else {
+                writeCustomMotdIfNeeded();
                 whenDone.run();
                 return;
             }
@@ -218,6 +219,9 @@ final class TermuxInstaller {
 
                     Logger.logInfo(LOG_TAG, "Bootstrap packages installed successfully.");
 
+                    // Write custom Anti Shell MOTD
+                    writeCustomMotdIfNeeded();
+
                     // Recreate env file since termux prefix was wiped earlier
                     TermuxShellEnvironment.writeEnvironmentToFile(activity);
 
@@ -237,6 +241,35 @@ final class TermuxInstaller {
                 }
             }
         }.start();
+    }
+
+    static void writeCustomMotdIfNeeded() {
+        try {
+            File motdFile = new File(TERMUX_PREFIX_DIR, "etc/motd");
+            if (motdFile.exists()) {
+                StringBuilder sb = new StringBuilder();
+                FileUtils.readTextFromFile("motd", motdFile.getAbsolutePath(), null, sb, true);
+                if (!sb.toString().contains("Anti Shell")) {
+                    String motd = "\033[1;36m" +
+                        "   ___         __   _   ______ __         ____\n" +
+                        "  /   |  ____ / /_ (_) / ___// /_  ___   / / /\n" +
+                        " / /| | / __ \\/ __// /  \\__ \\/ __ \\/ _ \\ / / / \n" +
+                        "/ ___ |/ / / / /_ / /  ___/ / / / /  __// / /  \n" +
+                        "/_/  |_/_/ /_/\\__//_/  /____/_/ /_/\\___//_/_/   \n" +
+                        "\033[0m\n" +
+                        "\033[1;32m⚡ Developed by MD Shahid\033[0m\n" +
+                        "\033[1;30m--------------------------------------------------\033[0m\n" +
+                        "\033[1;37mWelcome to Anti Shell - Next-Gen Cyber Terminal\033[0m\n\n" +
+                        " \033[1;34m*\033[0m Package manager : \033[1;33mpkg help\033[0m\n" +
+                        " \033[1;34m*\033[0m Search packages : \033[1;33mpkg search <query>\033[0m\n" +
+                        " \033[1;34m*\033[0m Install package : \033[1;33mpkg install <pkg>\033[0m\n" +
+                        " \033[1;34m*\033[0m Upgrade system  : \033[1;33mpkg upgrade\033[0m\n\n";
+                    FileUtils.writeTextToFile("motd", motdFile.getAbsolutePath(), null, motd, false);
+                }
+            }
+        } catch (Exception e) {
+            Logger.logError(LOG_TAG, "Failed to write custom motd: " + e.getMessage());
+        }
     }
 
     public static void showBootstrapErrorDialog(Activity activity, Runnable whenDone, String message) {
@@ -327,13 +360,6 @@ final class TermuxInstaller {
                         File audiobooksDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_AUDIOBOOKS);
                         Os.symlink(audiobooksDir.getAbsolutePath(), new File(storageDir, "audiobooks").getAbsolutePath());
                     }
-
-                    // Dir 0 should ideally be for primary storage
-                    // https://cs.android.com/android/platform/superproject/+/android-12.0.0_r32:frameworks/base/core/java/android/app/ContextImpl.java;l=818
-                    // https://cs.android.com/android/platform/superproject/+/android-12.0.0_r32:frameworks/base/core/java/android/os/Environment.java;l=219
-                    // https://cs.android.com/android/platform/superproject/+/android-12.0.0_r32:frameworks/base/core/java/android/os/Environment.java;l=181
-                    // https://cs.android.com/android/platform/superproject/+/android-12.0.0_r32:frameworks/base/services/core/java/com/android/server/StorageManagerService.java;l=3796
-                    // https://cs.android.com/android/platform/superproject/+/android-7.0.0_r36:frameworks/base/services/core/java/com/android/server/MountService.java;l=3053
 
                     // Create "Android/data/com.termux" symlinks
                     File[] dirs = context.getExternalFilesDirs(null);
