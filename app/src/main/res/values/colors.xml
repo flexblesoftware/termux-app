@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="anti_shell_bg">#090D16</color>
+    <color name="anti_shell_bg">#0A0E17</color>
+    <color name="anti_shell_drawer_bg">#0A0F1D</color>
     <color name="anti_shell_cyan">#00E5FF</color>
     <color name="anti_shell_mint">#00FFA3</color>
     <color name="anti_shell_purple">#C084FC</color>
+    <color name="anti_shell_btn_bg">#0D1322</color>
+    <color name="anti_shell_btn_active_bg">#1E293B</color>
+    <color name="anti_shell_border">#1E293B</color>
 </resources>

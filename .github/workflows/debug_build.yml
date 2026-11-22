@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   build:
@@ -39,6 +40,7 @@ jobs:
         shell: bash {0}
         env:
           PACKAGE_VARIANT: ${{ matrix.package_variant }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           exit_on_error() { echo "$1"; exit 1; }
 
@@ -67,7 +69,15 @@ jobs:
           export TERMUX_APP_VERSION_NAME="${RELEASE_VERSION_NAME/v/}"
           export TERMUX_APK_VERSION_TAG="$APK_VERSION_TAG"
           export TERMUX_PACKAGE_VARIANT="${{ env.PACKAGE_VARIANT }}"
-          if ! ./gradlew assembleDebug; then
+          if ! ./gradlew assembleDebug --stacktrace > build_apk.log 2>&1; then
+            tail -n 120 build_apk.log > apk_error.txt
+            if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
+              gh pr comment ${{ github.event.pull_request.number }} --body "### Build APK Failure Log (${{ env.PACKAGE_VARIANT }}):
+              \`\`\`
+              $(cat apk_error.txt)
+              \`\`\`" || true
+            fi
+            cat apk_error.txt
             exit_on_error "Build failed for '$APK_VERSION_TAG' build."
           fi
 
