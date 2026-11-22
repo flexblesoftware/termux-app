@@ -245,27 +245,38 @@ final class TermuxInstaller {
 
     static void writeCustomMotdIfNeeded() {
         try {
-            File motdFile = new File(TERMUX_PREFIX_DIR, "etc/motd");
+            File motdFile = new File(TERMUX_PREFIX_DIR_PATH, "etc/motd");
             if (motdFile.exists()) {
-                StringBuilder sb = new StringBuilder();
-                FileUtils.readTextFromFile("motd", motdFile.getAbsolutePath(), null, sb, true);
-                if (!sb.toString().contains("Anti Shell")) {
-                    String motd = "\033[1;36m" +
-                        "   ___         __   _   ______ __         ____\n" +
-                        "  /   |  ____ / /_ (_) / ___// /_  ___   / / /\n" +
-                        " / /| | / __ \\/ __// /  \\__ \\/ __ \\/ _ \\ / / / \n" +
-                        "/ ___ |/ / / / /_ / /  ___/ / / / /  __// / /  \n" +
-                        "/_/  |_/_/ /_/\\__//_/  /____/_/ /_/\\___//_/_/   \n" +
-                        "\033[0m\n" +
-                        "\033[1;32m⚡ Developed by MD Shahid\033[0m\n" +
-                        "\033[1;30m--------------------------------------------------\033[0m\n" +
-                        "\033[1;37mWelcome to Anti Shell - Next-Gen Cyber Terminal\033[0m\n\n" +
-                        " \033[1;34m*\033[0m Package manager : \033[1;33mpkg help\033[0m\n" +
-                        " \033[1;34m*\033[0m Search packages : \033[1;33mpkg search <query>\033[0m\n" +
-                        " \033[1;34m*\033[0m Install package : \033[1;33mpkg install <pkg>\033[0m\n" +
-                        " \033[1;34m*\033[0m Upgrade system  : \033[1;33mpkg upgrade\033[0m\n\n";
-                    FileUtils.writeTextToFile("motd", motdFile.getAbsolutePath(), null, motd, false);
+                byte[] bytes = new byte[(int) motdFile.length()];
+                try (java.io.FileInputStream fis = new java.io.FileInputStream(motdFile)) {
+                    int read = fis.read(bytes);
+                    if (read > 0) {
+                        String existing = new String(bytes, 0, read, java.nio.charset.StandardCharsets.UTF_8);
+                        if (existing.contains("Anti Shell")) return;
+                    }
                 }
+            }
+            File etcDir = new File(TERMUX_PREFIX_DIR_PATH, "etc");
+            if (!etcDir.exists()) etcDir.mkdirs();
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("\033[1;36m");
+            sb.append("   ___         __   _   ______ __         ____\n");
+            sb.append("  /   |  ____ / /_ (_) / ___// /_  ___   / / /\n");
+            sb.append(" / /| | / __ \\/ __// /  \\__ \\/ __ \\/ _ \\ / / / \n");
+            sb.append("/ ___ |/ / / / /_ / /  ___/ / / / /  __// / /  \n");
+            sb.append("/_/  |_/_/ /_/\\__//_/  /____/_/ /_/\\___//_/_/   \n");
+            sb.append("\033[0m\n");
+            sb.append("\033[1;32m⚡ Developed by MD Shahid\033[0m\n");
+            sb.append("\033[1;30m──────────────────────────────────────────────────\033[0m\n");
+            sb.append("\033[1;37mWelcome to Anti Shell - Next-Gen Cyber Terminal\033[0m\n\n");
+            sb.append(" \033[1;34m*\033[0m Package manager : \033[1;33mpkg help\033[0m\n");
+            sb.append(" \033[1;34m*\033[0m Search packages : \033[1;33mpkg search <query>\033[0m\n");
+            sb.append(" \033[1;34m*\033[0m Install package : \033[1;33mpkg install <pkg>\033[0m\n");
+            sb.append(" \033[1;34m*\033[0m Upgrade system  : \033[1;33mpkg upgrade\033[0m\n\n");
+
+            try (java.io.FileOutputStream fos = new java.io.FileOutputStream(motdFile)) {
+                fos.write(sb.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8));
             }
         } catch (Exception e) {
             Logger.logError(LOG_TAG, "Failed to write custom motd: " + e.getMessage());
